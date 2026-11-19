@@ -1,0 +1,34 @@
+/* Neon Vice Cover Studio: a dark editor beside a live cover preview. */
+html, body { margin: 0; min-height: 100%; background: #150a24; color: #f4eefc; font: 15px/1.45 "Helvetica Neue", Arial, sans-serif; }
+.app { display: flex; gap: 28px; align-items: flex-start; justify-content: center; padding: 26px; box-sizing: border-box; }
+.controls { display: flex; flex-direction: column; gap: 14px; width: 320px; flex: none; }
+.controls h1 { margin: 0; font-size: 30px; line-height: 1.05; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 900; }
+.controls h1 span { display: block; background: linear-gradient(90deg, #ffd76a, #ff7a3c 55%, #ff2e9e); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tagline { margin: 0; color: #c9b8e0; font-size: 14px; }
+fieldset { margin: 0; padding: 12px; border: 1px solid #4a2d6e; border-radius: 10px; display: flex; flex-direction: column; gap: 10px; }
+legend { font-weight: 800; font-size: 13px; letter-spacing: 0.4px; text-transform: uppercase; color: #ffd76a; padding: 0 6px; }
+label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 13px; }
+input[type=text] { font: inherit; padding: 9px 10px; border: 1px solid #5b3a86; border-radius: 6px; background: #221239; color: #fff; }
+input[type=range] { accent-color: #ff2e9e; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+button { font: inherit; font-weight: 700; padding: 9px 12px; border: 1px solid #5b3a86; border-radius: 7px; background: #241640; color: #f4eefc; cursor: pointer; }
+button:hover { border-color: #ff7a3c; }
+button.active { background: linear-gradient(90deg, #ff7a3c, #ff2e9e); border-color: transparent; color: #fff; }
+button.export { background: linear-gradient(90deg, #ffd76a, #ff7a3c 55%, #ff2e9e); border: 0; color: #1c0b2e; font-size: 16px; padding: 12px; }
+.file { cursor: pointer; }
+.file input { cursor: pointer; }
+.panel-label { margin: 0; font-weight: 800; color: #5ff2ff; }
+.hint { margin: 0; color: #a48fc4; font-size: 13px; }
+#status { margin: 0; min-height: 1.2em; color: #8dff9e; font-size: 13px; }
+.fine { margin: 0; color: #8a74ad; font-size: 12px; }
+.preview { flex: 1; min-width: 0; display: flex; justify-content: center; position: sticky; top: 26px; }
+canvas { width: min(100%, calc((100vh - 52px) * 1.78)); max-height: calc(100vh - 52px); object-fit: contain; box-shadow: 0 12px 44px rgba(0, 0, 0, 0.55); border-radius: 4px; cursor: crosshair; }
+body.shot-cover .controls { display: none; }
+body.shot-cover .app { padding: 0; display: block; }
+body.shot-cover .preview { position: static; }
+body.shot-cover canvas { width: 100vw; height: 100vh; max-height: none; box-shadow: none; border-radius: 0; object-fit: fill; }
+@media (max-width: 900px) {
+  .app { flex-direction: column; }
+  .controls { width: 100%; }
+  .preview { position: static; width: 100%; }
+}

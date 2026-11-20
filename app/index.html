@@ -3,75 +3,83 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Neon Vice Cover Studio — GTA-style poster covers</title>
+<title>Sunset Strip Cover Maker</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<main class="app">
-  <section class="controls" aria-label="Cover editor">
-    <h1>Neon Vice <span>Cover Studio</span></h1>
-    <p class="tagline">Your photos + a caption, made into multi-panel poster cover art with a sunset or neon grade. Everything stays on your machine.</p>
+<main class="shell">
+  <header class="masthead">
+    <h1>Sunset Strip Cover Maker</h1>
+    <p>Your photos + a caption, turned into multi-panel GTA-style poster cover art. Everything runs offline, in your browser — photos never leave your machine.</p>
+  </header>
 
-    <fieldset>
-      <legend>1 · Layout</legend>
-      <div class="row" role="group" aria-label="Layout">
-        <button type="button" data-layout="grid" class="active">Poster Grid</button>
-        <button type="button" data-layout="trio">Triple Strip</button>
-        <button type="button" data-layout="hero">Hero</button>
-      </div>
+  <section class="panel" aria-label="Photos">
+    <h2>1 · Photos</h2>
+    <label class="file-label">Upload up to 3 photos
+      <input id="photoFiles" type="file" accept="image/*" multiple>
+    </label>
+    <p id="photoCount" class="hint">No photos yet — try a sample below</p>
+    <div class="row">
+      <button id="sampleBoulevard" type="button">Sample: Sunset Boulevard</button>
+      <button id="samplePier" type="button">Sample: Neon Pier</button>
+    </div>
+    <fieldset class="fill-choice">
+      <legend>Fill the panels with</legend>
+      <label><input type="radio" name="fill" value="each" checked> One photo per panel</label>
+      <label><input type="radio" name="fill" value="one"> The same photo everywhere</label>
     </fieldset>
-
-    <fieldset>
-      <legend>2 · Photo for the selected panel</legend>
-      <p id="panel-label" class="panel-label">Panel 1 — photo 1</p>
-      <label class="file">Choose a photo
-        <input id="panel-photo" type="file" accept="image/*">
-      </label>
-      <label>Zoom
-        <input id="zoom" type="range" min="1" max="2.5" step="0.05" value="1">
-      </label>
-      <div class="row">
-        <button type="button" id="fill-all">Fill all panels</button>
-        <button type="button" id="reset-panel">Reset position</button>
-      </div>
-      <p class="hint">Click a panel in the preview to select it, then drag it to position its photo.</p>
-    </fieldset>
-
-    <fieldset>
-      <legend>3 · Caption</legend>
-      <label>Title
-        <input id="title" type="text" maxlength="24" value="VICE HEIST">
-      </label>
-      <label>Subtitle
-        <input id="subtitle" type="text" maxlength="60" value="ONE LAST SCORE IN THE SUNSET CITY">
-      </label>
-    </fieldset>
-
-    <fieldset>
-      <legend>4 · Colour grade</legend>
-      <div class="row" role="group" aria-label="Colour grade">
-        <button type="button" data-grade="sunset" class="active">Sunset</button>
-        <button type="button" data-grade="neon">Neon Nights</button>
-        <button type="button" data-grade="dusk">Dusk</button>
-        <button type="button" data-grade="noir">Noir</button>
-      </div>
-    </fieldset>
-
-    <fieldset>
-      <legend>5 · Post size &amp; export</legend>
-      <div class="row" role="group" aria-label="Post size">
-        <button type="button" data-size="square">1080 × 1080</button>
-        <button type="button" data-size="portrait">1080 × 1350</button>
-        <button type="button" data-size="wide" class="active">1920 × 1080</button>
-      </div>
-      <button type="button" id="export" class="export">Export PNG</button>
-      <p id="status" role="status"></p>
-    </fieldset>
-    <p class="fine">Original art only: the skyline and halftone are drawn in code, the sample photos were drawn with a script, and the lettering uses system fonts. No Rockstar logo, artwork or font.</p>
   </section>
-  <section class="preview" aria-label="Cover preview">
-    <canvas id="cover" width="1920" height="1080" aria-label="The cover"></canvas>
+
+  <section class="panel" aria-label="Layout and grade">
+    <h2>2 · Layout &amp; grade</h2>
+    <div class="row" role="group" aria-label="Layout">
+      <button type="button" data-layout="grid" class="active">Poster Grid</button>
+      <button type="button" data-layout="strip">Triple Strip</button>
+      <button type="button" data-layout="hero">Hero</button>
+    </div>
+    <div class="row" role="group" aria-label="Colour grade">
+      <button type="button" data-grade="sunset" class="active">Sunset</button>
+      <button type="button" data-grade="neon">Neon Nights</button>
+      <button type="button" data-grade="dusk">Dusk</button>
+      <button type="button" data-grade="noir">Noir</button>
+    </div>
+    <p class="hint">Click a panel on the poster to select it, then drag the photo inside it. Use the zoom slider for the selected panel.</p>
+    <label class="slider-label">Zoom selected panel
+      <input id="zoomRange" type="range" min="100" max="250" value="100">
+      <span id="zoomValue">100%</span>
+    </label>
+  </section>
+
+  <section class="panel" aria-label="Caption">
+    <h2>3 · Caption</h2>
+    <label>Title
+      <input id="titleText" type="text" maxlength="28" value="Sunset Heist">
+    </label>
+    <label>Subtitle
+      <input id="subtitleText" type="text" maxlength="40" value="Neon Nights">
+    </label>
+  </section>
+
+  <section class="preview-wrap">
+    <canvas id="stage" width="640" height="640" aria-label="Cover preview"></canvas>
+    <p id="panelLabel" class="hint">Panel 1 of 3 selected — drag the photo to move it</p>
+  </section>
+
+  <section class="panel export-panel" aria-label="Export">
+    <h2>4 · Export</h2>
+    <label>Size
+      <select id="exportSize">
+        <option value="1080x1080">Square · 1080 × 1080</option>
+        <option value="1080x1350">Portrait · 1080 × 1350</option>
+        <option value="1920x1080" selected>Wide · 1920 × 1080</option>
+      </select>
+    </label>
+    <div class="row">
+      <button id="exportBtn" type="button" class="primary">Export PNG</button>
+      <button id="clearBtn" type="button">Start over</button>
+    </div>
+    <p id="status" role="status">Pick a photo or a sample to begin.</p>
   </section>
 </main>
 <script type="module" src="./src/main.js"></script>

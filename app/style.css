@@ -1,34 +1,211 @@
-/* Neon Vice Cover Studio: a dark editor beside a live cover preview. */
-html, body { margin: 0; min-height: 100%; background: #150a24; color: #f4eefc; font: 15px/1.45 "Helvetica Neue", Arial, sans-serif; }
-.app { display: flex; gap: 28px; align-items: flex-start; justify-content: center; padding: 26px; box-sizing: border-box; }
-.controls { display: flex; flex-direction: column; gap: 14px; width: 320px; flex: none; }
-.controls h1 { margin: 0; font-size: 30px; line-height: 1.05; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 900; }
-.controls h1 span { display: block; background: linear-gradient(90deg, #ffd76a, #ff7a3c 55%, #ff2e9e); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.tagline { margin: 0; color: #c9b8e0; font-size: 14px; }
-fieldset { margin: 0; padding: 12px; border: 1px solid #4a2d6e; border-radius: 10px; display: flex; flex-direction: column; gap: 10px; }
-legend { font-weight: 800; font-size: 13px; letter-spacing: 0.4px; text-transform: uppercase; color: #ffd76a; padding: 0 6px; }
-label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 13px; }
-input[type=text] { font: inherit; padding: 9px 10px; border: 1px solid #5b3a86; border-radius: 6px; background: #221239; color: #fff; }
-input[type=range] { accent-color: #ff2e9e; }
-.row { display: flex; gap: 8px; flex-wrap: wrap; }
-button { font: inherit; font-weight: 700; padding: 9px 12px; border: 1px solid #5b3a86; border-radius: 7px; background: #241640; color: #f4eefc; cursor: pointer; }
-button:hover { border-color: #ff7a3c; }
-button.active { background: linear-gradient(90deg, #ff7a3c, #ff2e9e); border-color: transparent; color: #fff; }
-button.export { background: linear-gradient(90deg, #ffd76a, #ff7a3c 55%, #ff2e9e); border: 0; color: #1c0b2e; font-size: 16px; padding: 12px; }
-.file { cursor: pointer; }
-.file input { cursor: pointer; }
-.panel-label { margin: 0; font-weight: 800; color: #5ff2ff; }
-.hint { margin: 0; color: #a48fc4; font-size: 13px; }
-#status { margin: 0; min-height: 1.2em; color: #8dff9e; font-size: 13px; }
-.fine { margin: 0; color: #8a74ad; font-size: 12px; }
-.preview { flex: 1; min-width: 0; display: flex; justify-content: center; position: sticky; top: 26px; }
-canvas { width: min(100%, calc((100vh - 52px) * 1.78)); max-height: calc(100vh - 52px); object-fit: contain; box-shadow: 0 12px 44px rgba(0, 0, 0, 0.55); border-radius: 4px; cursor: crosshair; }
-body.shot-cover .controls { display: none; }
-body.shot-cover .app { padding: 0; display: block; }
-body.shot-cover .preview { position: static; }
-body.shot-cover canvas { width: 100vw; height: 100vh; max-height: none; box-shadow: none; border-radius: 0; object-fit: fill; }
-@media (max-width: 900px) {
-  .app { flex-direction: column; }
-  .controls { width: 100%; }
-  .preview { position: static; width: 100%; }
+/* Sunset Strip Cover Maker — dark neon editor theme. */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #f2ecff;
+  background: #120a24;
+}
+
+body.shot-cover {
+  background: #000;
+  overflow: hidden;
+}
+
+body.shot-cover .shell {
+  display: block;
+  max-width: none;
+  padding: 0;
+}
+
+body.shot-cover .masthead,
+body.shot-cover .panel,
+body.shot-cover .preview-wrap .hint {
+  display: none;
+}
+
+body.shot-cover .preview-wrap {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+body.shot-cover #stage {
+  display: block;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  max-width: none;
+  max-height: none;
+  width: 100vw;
+  height: 100vh;
+}
+
+.shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 16px;
+}
+
+.masthead {
+  grid-column: 1 / -1;
+}
+
+.masthead h1 {
+  margin: 0 0 6px;
+  font-size: 30px;
+  font-style: italic;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #ffe600, #ff7a1a 45%, #ff2e9a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.masthead p {
+  margin: 0;
+  color: #c9bce8;
+  line-height: 1.45;
+}
+
+.panel {
+  background: #1d1038;
+  border: 1px solid #3a2b5c;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.panel h2 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #ffe600;
+}
+
+.panel label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.panel input[type="text"],
+.panel select {
+  display: block;
+  width: 100%;
+  margin-top: 5px;
+  padding: 9px 10px;
+  font-size: 15px;
+  color: #fff;
+  background: #120a24;
+  border: 1px solid #5b4a8a;
+  border-radius: 8px;
+}
+
+.file-label input {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.hint {
+  font-size: 13px;
+  color: #b7a8dd;
+  line-height: 1.45;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 9px 13px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #f2ecff;
+  background: #2e1a5e;
+  border: 1px solid #5b4a8a;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:hover { background: #3d2478; }
+
+button.active {
+  background: #ff2e9a;
+  border-color: #ff2e9a;
+  color: #fff;
+}
+
+button.primary {
+  background: linear-gradient(90deg, #ff7a1a, #ff2e9a);
+  border: 0;
+  font-size: 16px;
+  padding: 11px 20px;
+}
+
+.fill-choice {
+  border: 1px solid #3a2b5c;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 12px 0 0;
+  font-size: 14px;
+}
+
+.fill-choice label {
+  display: block;
+  margin: 6px 0;
+}
+
+.slider-label input[type="range"] {
+  width: 100%;
+  accent-color: #ff2e9a;
+}
+
+.preview-wrap {
+  grid-row: span 3;
+  background: #0c0618;
+  border: 1px solid #3a2b5c;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+#stage {
+  max-width: 100%;
+  max-height: 520px;
+  border: 2px solid #5b4a8a;
+  border-radius: 6px;
+  cursor: grab;
+  touch-action: none;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #ffe600;
+  outline-offset: 2px;
+}
+
+#stage:active { cursor: grabbing; }
+
+.export-panel { grid-column: 1 / -1; }
+
+#status {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #ffe600;
+}
+
+@media (max-width: 820px) {
+  .shell { grid-template-columns: 1fr; }
+  .preview-wrap { grid-row: auto; }
 }

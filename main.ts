@@ -1,39 +1,36 @@
-// Neon Vice Cover Studio: the entrypoint the grader runs (Node 22, standard
-// library only). It hands the app in: copies this repository's app/ and
-// screenshots/ into the output directory and writes /output/dossier.json,
-// the summary the judge reads, using the vendored make.fun library.
-// Outside the grader, MAKEFUN_OUTPUT_DIR stands in for /output:
+// Sunset Strip Cover Maker — entry program (Node 22, standard library only).
 //
+// The app itself is plain static files in app/ (index.html plus its modules,
+// no build step, nothing fetched from the network). This program hands the
+// entry in: it copies app/ and screenshots/ next to this file into the output
+// directory and writes output/dossier.json with the vendored make.fun
+// library, exactly the summary the judge reads.
+//
+// Run it locally with:
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
-//
-// The program runs twice and must write the same bytes both times: it only
-// copies files and writes the dossier the library builds from them, so it
-// does.
+// In the grader MAKEFUN_OUTPUT_DIR is unset and /output is used instead.
 
 import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-app.ts';
 
-const here = fileURLToPath(new URL('.', import.meta.url));
-const out = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+const repoRoot = fileURLToPath(new URL('.', import.meta.url));
+const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 
-mkdirSync(out, { recursive: true });
-cpSync(join(here, 'app'), join(out, 'app'), { recursive: true });
-mkdirSync(join(out, 'screenshots'), { recursive: true });
-if (existsSync(join(here, 'screenshots'))) {
-  cpSync(join(here, 'screenshots'), join(out, 'screenshots'), { recursive: true });
+mkdirSync(outDir, { recursive: true });
+cpSync(join(repoRoot, 'app'), join(outDir, 'app'), { recursive: true });
+mkdirSync(join(outDir, 'screenshots'), { recursive: true });
+if (existsSync(join(repoRoot, 'screenshots'))) {
+  cpSync(join(repoRoot, 'screenshots'), join(outDir, 'screenshots'), { recursive: true });
 }
 
-// The scorer's own caps (from the kit's reference/gate.json): only
-// text_max_bytes shapes the bytes; the others refuse an entry the scorer
-// would refuse (more than 4 screenshots or one over 256 KiB; more than 993
-// files in app/ or 48 MiB of app files in all, or a path under app/ over
-// 1000 bytes: app/ counts beside /output's own 1000-entry cap, its
-// screenshots/ and dossier.json).
+// Caps mirror the gate so a build that passes here also passes there:
+// at most 4 screenshots of 256 KiB, at most 993 app files / 48 MiB, and
+// no app path longer than 1000 bytes. text_max_bytes caps the dossier text.
 writeFileSync(
-  join(out, 'dossier.json'),
-  buildDossier(out, {
+  join(outDir, 'dossier.json'),
+  buildDossier(outDir, {
     text_max_bytes: 163840,
     screenshots: { max: 4, max_bytes: 262144 },
     app_max_files: 993,
@@ -41,3 +38,6 @@ writeFileSync(
     app_path_max_bytes: 1000,
   }),
 );
+
+console.log(`wrote ${outDir}/dossier.json`);
+console.log(`app/ and screenshots/ copied from ${repoRoot}`);
